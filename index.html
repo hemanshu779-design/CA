@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CA</title>
+  <title>CA Finalist</title>
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
@@ -12,7 +12,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="CA">
+  <meta name="apple-mobile-web-app-title" content="CA Finalist">
   <link rel="apple-touch-icon" href="/icon-192.png">
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
@@ -2911,7 +2911,7 @@
     <div style="display:flex;align-items:center;gap:10px">
       <img src="/icon-192.png" alt="" class="topbar-logo">
       <div class="sidebar-brand" style="margin:0">
-        <span class="logo-text">CA</span>
+        <span class="logo-text">CA Finalist</span>
         <span class="logo-sub">CA + Equity Researcher</span>
       </div>
     </div>
@@ -3796,7 +3796,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Dashboard Title</label>
-          <input type="text" class="form-input" id="s-title" placeholder="e.g. CA">
+          <input type="text" class="form-input" id="s-title" placeholder="e.g. CA Finalist">
         </div>
       </div>
 
@@ -4014,13 +4014,147 @@
     // CA FINAL PAPERS — default structure
     // ============================================================
     const DEFAULT_PAPERS = [
-      {id: 'p1', num: 'Paper 1', name: 'Financial Reporting', topics: []},
-      {id: 'p2', num: 'Paper 2', name: 'Advanced Financial Management', topics: []},
-      {id: 'p3', num: 'Paper 3', name: 'Advanced Auditing & Professional Ethics', topics: []},
-      {id: 'p4', num: 'Paper 4', name: 'Direct Tax Laws & International Taxation', topics: []},
-      {id: 'p5', num: 'Paper 5', name: 'Indirect Tax Laws', topics: []},
-      {id: 'p6', num: 'Paper 6', name: 'Elective — Risk Management', topics: []}
+      {id: 'p1', num: 'Paper 1', name: 'Financial Reporting', topics: [
+        'Ch 1: Introduction to Indian Accounting Standards',
+        'Ch 2: Conceptual Framework for Financial Reporting under Ind AS',
+        'Ch 3: Ind AS on Presentation of General Purpose Financial Statements',
+        'Ch 4: Ind AS on Measurement based on Accounting Policies',
+        'Ch 5: Ind AS on Assets of the Financial Statements',
+        'Ch 6: Ind AS on Liabilities of the Financial Statements',
+        'Ch 7: Ind AS on Items impacting the Financial Statements',
+        'Ch 8: Ind AS on Disclosures in the Financial Statements',
+        'Ch 9: Ind AS 115 — Revenue from Contracts with Customers',
+        'Ch 10: Other Indian Accounting Standards',
+        'Ch 11: Accounting and Reporting of Financial Instruments',
+        'Ch 12: Ind AS 103 — Business Combinations',
+        'Ch 13: Consolidated and Separate Financial Statements of Group Entities',
+        'Ch 14: Ind AS 101 — First-time Adoption of Ind AS',
+        'Ch 15: Analysis of Financial Statements',
+        'Ch 16: Professional and Ethical Duty of a Chartered Accountant',
+        'Ch 17: Accounting and Technology'
+      ]},
+      {id: 'p2', num: 'Paper 2', name: 'Advanced Financial Management', topics: [
+        'Ch 1: Financial Policy and Corporate Strategy',
+        'Ch 2: Risk Management',
+        'Ch 3: Advanced Capital Budgeting Decisions',
+        'Ch 4: Security Analysis',
+        'Ch 5: Security Valuation',
+        'Ch 6: Portfolio Management',
+        'Ch 7: Securitization',
+        'Ch 8: Mutual Funds',
+        'Ch 9: Derivatives Analysis and Valuation',
+        'Ch 10: Foreign Exchange Exposure and Risk Management',
+        'Ch 11: International Financial Management',
+        'Ch 12: Interest Rate Risk Management',
+        'Ch 13: Business Valuation',
+        'Ch 14: Mergers, Acquisitions, and Corporate Restructuring',
+        'Ch 15: Startup Finance'
+      ]},
+      {id: 'p3', num: 'Paper 3', name: 'Advanced Auditing, Assurance and Professional Ethics', topics: [
+        'Ch 1: Quality Control',
+        'Ch 2: General Auditing Principles and Auditors Responsibilities',
+        'Ch 3: Audit Planning, Strategy, and Execution',
+        'Ch 4: Materiality, Risk Assessment, and Internal Control',
+        'Ch 5: Audit Evidence',
+        'Ch 6: Completion and Review',
+        'Ch 7: Reporting',
+        'Ch 8: Specialised Areas',
+        'Ch 9: Related Services',
+        'Ch 10: Review of Financial Information',
+        'Ch 11: Prospective Financial Information and Other Assurance Services',
+        'Ch 12: Digital Auditing & Assurance',
+        'Ch 13: Group Audits',
+        'Ch 14: Special Features of Audit of Banks & Non-Banking Financial Companies',
+        'Ch 15: Overview of Audit of Public Sector Undertakings',
+        'Ch 16: Internal Audit',
+        'Ch 17: Due Diligence, Investigation & Forensic Accounting',
+        'Ch 18: Sustainable Development Goals (SDG) & ESG Assurance',
+        'Ch 19: Professional Ethics & Liabilities of Auditors'
+      ]},
+      {id: 'p4', num: 'Paper 4', name: 'Direct Tax Laws & International Taxation', topics: [
+        'Ch 1: Basic Concepts',
+        'Ch 2: Incomes which do not form part of Total Income',
+        'Ch 3: Profits and Gains of Business or Profession',
+        'Ch 4: Capital Gains',
+        'Ch 5: Income from Other Sources',
+        "Ch 6: Income of Other Persons included in Assessee's Total Income",
+        'Ch 7: Aggregation of Income, Set Off or Carry Forward of Losses',
+        'Ch 8: Deductions from Gross Total Income',
+        'Ch 9: Assessment of Various Entities',
+        'Ch 10: Assessment of Trusts, Institutions, Political Parties & Other Special Entities',
+        'Ch 11: Tax Planning, Tax Avoidance, and Tax Evasion',
+        'Ch 12: Taxation of Digital Transactions',
+        'Ch 13: Deduction, Collection, and Recovery of Tax',
+        'Ch 14: Income Tax Authorities',
+        'Ch 15: Assessment Procedure',
+        'Ch 16: Appeals and Revision',
+        'Ch 17: Dispute Resolution',
+        'Ch 18: Miscellaneous Provisions',
+        'Ch 19: Provisions to Counteract Unethical Tax Practices',
+        'Ch 20: Tax Audit and Ethical Compliance',
+        'Ch 21: Non-Resident Taxation',
+        'Ch 22: Double Taxation Relief',
+        'Ch 23: Advance Rulings',
+        'Ch 24: Transfer Pricing',
+        'Ch 25: Fundamentals of BEPS',
+        'Ch 26: Application and Interpretation of Tax Treaties',
+        'Ch 27: Overview of Model Tax Conventions',
+        'Ch 28: Latest Developments in International Taxation'
+      ]},
+      {id: 'p5', num: 'Paper 5', name: 'Indirect Tax Laws', topics: [
+        'GST — Ch 1: Supply under GST',
+        'GST — Ch 2: Charge of GST',
+        'GST — Ch 3: Place of Supply',
+        'GST — Ch 4: Exemptions from GST',
+        'GST — Ch 5: Time of Supply',
+        'GST — Ch 6: Value of Supply',
+        'GST — Ch 7: Input Tax Credit',
+        'GST — Ch 8: Registration',
+        'GST — Ch 9: Tax Invoice, Credit and Debit Notes',
+        'GST — Ch 10: Accounts and Records; E-way Bill',
+        'GST — Ch 11: Payment of Tax',
+        'GST — Ch 12: Electronic Commerce Transactions',
+        'GST — Ch 13: Returns',
+        'GST — Ch 14: Import and Export Under GST',
+        'GST — Ch 15: Refunds',
+        'GST — Ch 16: Job Work',
+        'GST — Ch 17: Assessment and Audit',
+        'GST — Ch 18: Inspection, Search, Seizure, and Arrest',
+        'GST — Ch 19: Demands and Recovery',
+        'GST — Ch 20: Liability to Pay in Certain Cases',
+        'GST — Ch 21: Offences, Penalties and Ethical Aspects under GST',
+        'GST — Ch 22: Appeals and Revision',
+        'GST — Ch 23: Advance Ruling',
+        'GST — Ch 24: Miscellaneous Provisions',
+        'Customs & FTP — Ch 1: Levy of and Exemptions from Customs Duty',
+        'Customs & FTP — Ch 2: Types of Duty',
+        'Customs & FTP — Ch 3: Classification of Imported and Export Goods',
+        'Customs & FTP — Ch 4: Valuation under the Customs Act, 1962',
+        'Customs & FTP — Ch 5: Importation and Exportation of Goods',
+        'Customs & FTP — Ch 6: Warehousing',
+        'Customs & FTP — Ch 7: Refund',
+        'Customs & FTP — Ch 8: Foreign Trade Policy'
+      ]},
+      {id: 'p6', num: 'Paper 6', name: 'Integrated Business Solutions (Multidisciplinary Case Study)', topics: []}
     ];
+
+    // One-time, safe migration: if a paper's chapter list is currently empty
+    // (true for every existing install, since the old defaults were blank),
+    // fill it in with the syllabus above. Papers that already have any
+    // chapters — meaning you added your own — are left completely untouched.
+    function migrateSyllabusIfNeeded(stored) {
+      let changed = false;
+      DEFAULT_PAPERS.forEach(p => {
+        if (!stored[p.id] || stored[p.id].length === 0) {
+          if (p.topics.length > 0) {
+            stored[p.id] = p.topics.map((t, i) => ({id: p.id + '_' + i, text: t, done: false}));
+            changed = true;
+          }
+        }
+      });
+      if (changed) save(KEYS.topics, stored);
+      return stored;
+    }
 
     function getTopics() {
       const stored = load(KEYS.topics, null);
@@ -4032,7 +4166,7 @@
         save(KEYS.topics, init);
         return init;
       }
-      return stored;
+      return migrateSyllabusIfNeeded(stored);
     }
 
     // ============================================================
@@ -5287,13 +5421,13 @@
     // SETTINGS
     // ============================================================
     function getSettings() {
-      return load('hub_settings', {name: '', title: 'CA', dailyTarget: 8, showStreak: true, logNotePrompt: true, examDate: '', lightTheme: true});
+      return load('hub_settings', {name: '', title: 'CA Finalist', dailyTarget: 8, showStreak: true, logNotePrompt: true, examDate: '', lightTheme: true});
     }
 
     function openSettingsModal() {
       const s = getSettings();
       document.getElementById('s-name').value = s.name || '';
-      document.getElementById('s-title').value = s.title || 'CA';
+      document.getElementById('s-title').value = s.title || 'CA Finalist';
       document.getElementById('s-exam-date').value = s.examDate || '';
       document.getElementById('s-light-theme').checked = s.lightTheme === true;
       document.getElementById('s-show-streak').checked = s.showStreak !== false;
@@ -5309,7 +5443,7 @@
     function saveSettings() {
       const s = getSettings();
       s.name = document.getElementById('s-name').value.trim();
-      s.title = document.getElementById('s-title').value.trim() || 'CA';
+      s.title = document.getElementById('s-title').value.trim() || 'CA Finalist';
       s.examDate = document.getElementById('s-exam-date').value;
       s.lightTheme = document.getElementById('s-light-theme').checked;
       s.showStreak = document.getElementById('s-show-streak').checked;

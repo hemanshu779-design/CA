@@ -1,5 +1,5 @@
 {
-  "name": "my-hub",
+  "name": "ca-finalist",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "@capacitor/android": "latest"
   },
   "devDependencies": {
-    "@capacitor/cli": "latest"
+    "@capacitor/cli": "latest",
+    "@capacitor/assets": "latest"
   }
 }

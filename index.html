@@ -4012,23 +4012,62 @@
 
     // ============================================================
     // CA FINAL PAPERS — default structure
+    // Sourced directly from ICAI's official study material (Board of
+    // Studies, applicable May 2026 exam onwards): icai.org/post/final-nset
+    // Where ICAI subdivides a chapter into Units, each unit is listed as
+    // its own trackable item (prefixed with its chapter) rather than
+    // collapsing the whole chapter into one entry — this matches how the
+    // actual study material is organized and lets you track progress at
+    // the same granularity ICAI itself uses.
     // ============================================================
+    const SYLLABUS_VERSION = 2; // v1 = chapters only, v2 = chapters + units
+
     const DEFAULT_PAPERS = [
       {id: 'p1', num: 'Paper 1', name: 'Financial Reporting', topics: [
         'Ch 1: Introduction to Indian Accounting Standards',
         'Ch 2: Conceptual Framework for Financial Reporting under Ind AS',
-        'Ch 3: Ind AS on Presentation of General Purpose Financial Statements',
-        'Ch 4: Ind AS on Measurement based on Accounting Policies',
-        'Ch 5: Ind AS on Assets of the Financial Statements',
-        'Ch 6: Ind AS on Liabilities of the Financial Statements',
-        'Ch 7: Ind AS on Items impacting the Financial Statements',
-        'Ch 8: Ind AS on Disclosures in the Financial Statements',
-        'Ch 9: Ind AS 115 — Revenue from Contracts with Customers',
-        'Ch 10: Other Indian Accounting Standards',
-        'Ch 11: Accounting and Reporting of Financial Instruments',
-        'Ch 12: Ind AS 103 — Business Combinations',
-        'Ch 13: Consolidated and Separate Financial Statements of Group Entities',
-        'Ch 14: Ind AS 101 — First-time Adoption of Ind AS',
+        'Ch 3: Presentation of Financial Statements — Unit 1: Ind AS 1 "Presentation of Financial Statements"',
+        'Ch 3: Presentation of Financial Statements — Unit 2: Ind AS 34 "Interim Financial Reporting"',
+        'Ch 3: Presentation of Financial Statements — Unit 3: Ind AS 7 "Statement of Cash Flows"',
+        'Ch 4: Measurement based on Accounting Policies — Unit 1: Ind AS 8 "Accounting Policies, Changes in Accounting Estimates and Errors"',
+        'Ch 4: Measurement based on Accounting Policies — Unit 2: Ind AS 10 "Events after the Reporting Period"',
+        'Ch 4: Measurement based on Accounting Policies — Unit 3: Ind AS 113 "Fair Value Measurement"',
+        'Ch 5: Assets of the Financial Statements — Unit 1: Ind AS 2 "Inventories"',
+        'Ch 5: Assets of the Financial Statements — Unit 2: Ind AS 16 "Property, Plant and Equipment"',
+        'Ch 5: Assets of the Financial Statements — Unit 3: Ind AS 23 "Borrowing Costs"',
+        'Ch 5: Assets of the Financial Statements — Unit 4: Ind AS 36 "Impairment of Assets"',
+        'Ch 5: Assets of the Financial Statements — Unit 5: Ind AS 38 "Intangible Assets"',
+        'Ch 5: Assets of the Financial Statements — Unit 6: Ind AS 40 "Investment Property"',
+        'Ch 5: Assets of the Financial Statements — Unit 7: Ind AS 105 "Non-current Assets Held for Sale and Discontinued Operations"',
+        'Ch 5: Assets of the Financial Statements — Unit 8: Ind AS 116 "Leases"',
+        'Ch 6: Liabilities of the Financial Statements — Unit 1: Ind AS 19 "Employee Benefits"',
+        'Ch 6: Liabilities of the Financial Statements — Unit 2: Ind AS 37 "Provisions, Contingent Liabilities and Contingent Assets"',
+        'Ch 7: Items impacting the Financial Statements — Unit 1: Ind AS 12 "Income Taxes"',
+        'Ch 7: Items impacting the Financial Statements — Unit 2: Ind AS 21 "The Effects of Changes in Foreign Exchange Rates"',
+        'Ch 8: Disclosures in the Financial Statements — Unit 1: Ind AS 24 "Related Party Disclosures"',
+        'Ch 8: Disclosures in the Financial Statements — Unit 2: Ind AS 33 "Earnings per Share"',
+        'Ch 8: Disclosures in the Financial Statements — Unit 3: Ind AS 108 "Operating Segments"',
+        'Ch 9: Ind AS 115 "Revenue from Contracts with Customers"',
+        'Ch 10: Other Indian Accounting Standards — Unit 1: Ind AS 41 "Agriculture"',
+        'Ch 10: Other Indian Accounting Standards — Unit 2: Ind AS 20 "Accounting for Government Grants and Disclosure of Government Assistance"',
+        'Ch 10: Other Indian Accounting Standards — Unit 3: Ind AS 102 "Share Based Payment"',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 1: Scope and Definitions',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 2: Classification and Measurement of Financial Assets and Financial Liabilities',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 3: Equity and Financial Liabilities',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 4: Derivatives and Embedded Derivatives',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 5: Recognition and Derecognition of Financial Instruments',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 6: Hedge Accounting',
+        'Ch 11: Accounting and Reporting of Financial Instruments — Unit 7: Disclosures',
+        'Ch 12: Ind AS 103 "Business Combinations"',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 1: Introduction to Consolidated and Separate Financial Statements',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 2: Important Definitions',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 3: Consolidated Financial Statements',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 4: Ind AS 110 Consolidation Procedure for Subsidiaries',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 5: Ind AS 111 "Joint Arrangements"',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 6: Ind AS 28 "Investments in Associates and Joint Ventures"',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 7: Ind AS 27 "Separate Financial Statements"',
+        'Ch 13: Consolidated & Separate Financial Statements — Unit 8: Disclosures',
+        'Ch 14: Ind AS 101 "First-time Adoption of Ind AS"',
         'Ch 15: Analysis of Financial Statements',
         'Ch 16: Professional and Ethical Duty of a Chartered Accountant',
         'Ch 17: Accounting and Technology'
@@ -4064,7 +4103,8 @@
         'Ch 11: Prospective Financial Information and Other Assurance Services',
         'Ch 12: Digital Auditing & Assurance',
         'Ch 13: Group Audits',
-        'Ch 14: Special Features of Audit of Banks & Non-Banking Financial Companies',
+        'Ch 14: Special Features of Audit of Banks & NBFCs — Unit 1',
+        'Ch 14: Special Features of Audit of Banks & NBFCs — Unit 2',
         'Ch 15: Overview of Audit of Public Sector Undertakings',
         'Ch 16: Internal Audit',
         'Ch 17: Due Diligence, Investigation & Forensic Accounting',
@@ -4091,7 +4131,7 @@
         'Ch 17: Dispute Resolution',
         'Ch 18: Miscellaneous Provisions',
         'Ch 19: Provisions to Counteract Unethical Tax Practices',
-        'Ch 20: Tax Audit and Ethical Compliance',
+        'Ch 20: Tax Audit and Ethical Compliances',
         'Ch 21: Non-Resident Taxation',
         'Ch 22: Double Taxation Relief',
         'Ch 23: Advance Rulings',
@@ -4126,24 +4166,41 @@
         'GST — Ch 22: Appeals and Revision',
         'GST — Ch 23: Advance Ruling',
         'GST — Ch 24: Miscellaneous Provisions',
-        'Customs & FTP — Ch 1: Levy of and Exemptions from Customs Duty',
+        'Customs & FTP — Ch 1: Levy of & Exemptions from Customs Duty — Unit I: Introduction to Customs Law',
+        'Customs & FTP — Ch 1: Levy of & Exemptions from Customs Duty — Unit II: Levy and Exemptions',
         'Customs & FTP — Ch 2: Types of Duty',
         'Customs & FTP — Ch 3: Classification of Imported and Export Goods',
         'Customs & FTP — Ch 4: Valuation under the Customs Act, 1962',
         'Customs & FTP — Ch 5: Importation and Exportation of Goods',
         'Customs & FTP — Ch 6: Warehousing',
         'Customs & FTP — Ch 7: Refund',
-        'Customs & FTP — Ch 8: Foreign Trade Policy'
+        'Customs & FTP — Ch 8: Foreign Trade Policy — Unit I: Introduction to FTP',
+        'Customs & FTP — Ch 8: Foreign Trade Policy — Unit II: Export Promotion Schemes under FTP'
       ]},
-      {id: 'p6', num: 'Paper 6', name: 'Integrated Business Solutions (Multidisciplinary Case Study)', topics: []}
+      {id: 'p6', num: 'Paper 6', name: 'Integrated Business Solutions (Multidisciplinary Case Study with Strategic Management)', topics: []}
     ];
 
-    // One-time, safe migration: if a paper's chapter list is currently empty
-    // (true for every existing install, since the old defaults were blank),
-    // fill it in with the syllabus above. Papers that already have any
-    // chapters — meaning you added your own — are left completely untouched.
+    // Extracts the chapter number from a topic's text (works for both the
+    // old "Ch N: ..." format and the new "Ch N: ... — Unit X: ..." format,
+    // and the GST/Customs-prefixed Paper 5 variants) so progress can be
+    // carried across a syllabus-structure upgrade.
+    function extractChapterNum(text) {
+      const m = text.match(/Ch (\d+)/);
+      return m ? m[1] : null;
+    }
+
+    // Safe migration, run every time the app loads:
+    // 1) Any paper that's currently empty gets populated from the defaults
+    //    above (true for every fresh install, and for Paper 6 always).
+    // 2) If the stored syllabus predates the chapter+unit expansion
+    //    (tracked via SYLLABUS_VERSION), each paper whose topic count no
+    //    longer matches the current defaults gets upgraded — carrying
+    //    forward "done" status from old chapters onto their new
+    //    corresponding units, so marking a chapter complete before this
+    //    update isn't lost, just becomes more granular.
     function migrateSyllabusIfNeeded(stored) {
       let changed = false;
+
       DEFAULT_PAPERS.forEach(p => {
         if (!stored[p.id] || stored[p.id].length === 0) {
           if (p.topics.length > 0) {
@@ -4152,6 +4209,29 @@
           }
         }
       });
+
+      const currentVersion = load('hub_syllabus_version', 1);
+      if (currentVersion < SYLLABUS_VERSION) {
+        DEFAULT_PAPERS.forEach(p => {
+          const existing = stored[p.id] || [];
+          if (existing.length !== p.topics.length && p.topics.length > 0) {
+            const doneChapterNums = new Set();
+            existing.forEach(t => {
+              if (t.done) {
+                const n = extractChapterNum(t.text);
+                if (n) doneChapterNums.add(n);
+              }
+            });
+            stored[p.id] = p.topics.map((t, i) => {
+              const n = extractChapterNum(t);
+              return {id: p.id + '_' + i, text: t, done: n ? doneChapterNums.has(n) : false};
+            });
+            changed = true;
+          }
+        });
+        save('hub_syllabus_version', SYLLABUS_VERSION);
+      }
+
       if (changed) save(KEYS.topics, stored);
       return stored;
     }
@@ -4164,6 +4244,7 @@
           init[p.id] = p.topics.map((t, i) => ({id: p.id + '_' + i, text: t, done: false}));
         });
         save(KEYS.topics, init);
+        save('hub_syllabus_version', SYLLABUS_VERSION);
         return init;
       }
       return migrateSyllabusIfNeeded(stored);

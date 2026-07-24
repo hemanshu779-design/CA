@@ -8,7 +8,7 @@
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d0e12">
+  <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1495,11 +1495,19 @@
       cursor: pointer;
       transition: all 0.15s;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       user-select: none;
       width: 100%;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.5;
+    }
+
+    .topic-pill > span {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: break-word;
+      padding-top: 1px;
     }
 
     .topic-pill:hover {
@@ -4348,7 +4356,7 @@
       const avgPct = readingBooks.length
         ? Math.round(readingBooks.reduce((s, b) => s + (b.progress || 0), 0) / readingBooks.length)
         : 0;
-      const bookOffset = circumference - (avgPct / 100) * circumference;
+      const bookOffset = 289.027 - (avgPct / 100) * 289.027;
       setTimeout(() => {
         const ring2 = document.getElementById('ring-books');
         if (ring2) ring2.style.strokeDashoffset = bookOffset;
@@ -4364,7 +4372,7 @@
       const logs = load(KEYS.studyLog, {});
       const todayHours = logs[today()]?.hours || 0;
       const studyPct = Math.min(100, Math.round(todayHours / dailyTarget * 100));
-      const studyOffset = circumference - (studyPct / 100) * circumference;
+      const studyOffset = 289.027 - (studyPct / 100) * 289.027;
       setTimeout(() => {
         const ring3 = document.getElementById('ring-study');
         if (ring3) ring3.style.strokeDashoffset = studyOffset;
@@ -4888,6 +4896,7 @@
     }
 
     function deleteChapterNote(noteId) {
+      if (!confirm('Delete this note?')) return;
       if (!activeTopicId) return;
       const cd = getChapterData(activeTopicId);
       cd.notes = (cd.notes || []).filter(n => n.id !== noteId);
@@ -5051,6 +5060,7 @@
     }
 
     function deleteLog(d) {
+      if (!confirm('Delete this log entry?')) return;
       const logs = load(KEYS.studyLog, {});
       delete logs[d];
       save(KEYS.studyLog, logs);
@@ -5738,6 +5748,7 @@
     }
 
     function deleteHabit(id) {
+      if (!confirm('Delete this habit? Its check-in history will be lost too.')) return;
       saveHabitsList(getHabits().filter(h => h.id !== id));
       const checks = getHabitChecks();
       delete checks[id];
@@ -6164,6 +6175,68 @@
       e.preventDefault();
       el.click();
     });
+
+    // ============================================================
+    // NATIVE ANDROID INTEGRATION
+    // Only runs inside the actual installed app (Capacitor injects
+    // `window.Capacitor` into the WebView) — completely inert and safe
+    // when this same file is opened in a regular browser or as a PWA.
+    // ============================================================
+    if (window.Capacitor && window.Capacitor.Plugins) {
+      const { App, StatusBar, SystemBars, SplashScreen } = window.Capacitor.Plugins;
+
+      // Hardware/gesture back button: close a modal if one's open, else go
+      // to the dashboard if you're elsewhere, else require a second press
+      // within 2 seconds to actually exit — standard Android app behavior.
+      // Without this, the OS default is to exit the app immediately from
+      // whatever screen you're on.
+      if (App) {
+        let lastBackPress = 0;
+        App.addListener('backButton', () => {
+          const openModal = document.querySelector('.modal-overlay.open');
+          if (openModal) {closeModal(openModal.id); return;}
+
+          const timerOpen = document.getElementById('timer-modal');
+          if (timerOpen && timerOpen.classList.contains('open')) {closeTimerModal(); return;}
+
+          const activePage = document.querySelector('.page.active');
+          if (activePage && activePage.id !== 'page-dashboard') {
+            showPage('dashboard');
+            document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('mob-dashboard')?.classList.add('active');
+            return;
+          }
+
+          const now = Date.now();
+          if (now - lastBackPress < 2000) {
+            App.exitApp();
+          } else {
+            lastBackPress = now;
+            showToast('Press back again to exit');
+          }
+        });
+      }
+
+      // System status bar icon color: match whichever theme is active so
+      // the clock/battery icons stay readable against our own header
+      // instead of whatever the OS default happens to be. SystemBars (part
+      // of @capacitor/core) is the current API and the only one that works
+      // correctly on Android 15+; StatusBar is kept as a fallback for
+      // older Capacitor versions where SystemBars isn't present.
+      const isLight = document.body.classList.contains('light-theme');
+      if (SystemBars) {
+        SystemBars.setStyle({style: isLight ? 'LIGHT' : 'DARK'}).catch(() => {});
+      } else if (StatusBar) {
+        StatusBar.setBackgroundColor({color: isLight ? '#ffffff' : '#14161c'}).catch(() => {});
+        StatusBar.setStyle({style: isLight ? 'Light' : 'Dark'}).catch(() => {});
+      }
+
+      // Splash screen: hide once the app has actually finished its own
+      // init, rather than a fixed timer that might cut off too early/late.
+      if (SplashScreen) {
+        SplashScreen.hide().catch(() => {});
+      }
+    }
 
     init();
   </script>

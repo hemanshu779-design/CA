@@ -269,6 +269,16 @@
       padding: 4px 8px;
     }
 
+    .btn-danger-solid {
+      background: var(--red);
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    .btn-danger-solid:hover {
+      opacity: 0.9;
+    }
+
     .btn-danger:hover {
       background: var(--red-dim);
     }
@@ -2702,6 +2712,18 @@
       overflow-wrap: break-word;
     }
 
+    .todo-item-date {
+      font-size: 9px;
+      color: var(--blue);
+      background: var(--blue-dim);
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     .todo-item-tag {
       font-size: 9px;
       padding: 2px 8px;
@@ -3439,6 +3461,7 @@
         <div class="add-topic-inline" style="margin-top:10px">
           <input type="text" id="todo-add-input" placeholder="Add a task..."
             onkeydown="if(event.key==='Enter')addTodo()">
+          <input type="date" id="todo-add-date" class="form-input" style="flex:0 0 130px;width:auto">
           <button class="btn btn-gold" onclick="addTodo()">Add</button>
         </div>
       </div>
@@ -3790,6 +3813,19 @@
   </div>
 
   <!-- Settings Modal -->
+  <!-- CONFIRM DIALOG (replaces native confirm(), which Android's WebView doesn't reliably support) -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal" style="width:340px;text-align:center">
+      <div id="confirm-modal-message" style="font-size:14px;color:var(--text);line-height:1.6;margin-bottom:22px">
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" style="flex:1" onclick="confirmModalResolve(false)">Cancel</button>
+        <button class="btn btn-danger-solid" style="flex:1" id="confirm-modal-ok-btn"
+          onclick="confirmModalResolve(true)">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="settings-modal">
     <div class="modal" style="width:520px;max-height:85vh;overflow-y:auto">
       <button class="modal-close" onclick="closeModal('settings-modal')">✕</button>
@@ -3929,8 +3965,7 @@
       </div>
 
       <div class="modal-actions" style="margin-top:20px">
-        <button class="btn btn-outline" onclick="closeModal('settings-modal')">Close</button>
-        <button class="btn btn-gold" onclick="saveSettings()">Save Settings</button>
+        <button class="btn btn-gold" style="width:100%" onclick="saveSettingsAndClose()">Save Settings</button>
       </div>
     </div>
   </div>
@@ -4286,6 +4321,23 @@
     // ============================================================
     function openModal(id) {document.getElementById(id).classList.add('open');}
     function closeModal(id) {document.getElementById(id).classList.remove('open');}
+
+    // Reliable replacement for the browser's native confirm(), which
+    // Android's WebView does not support out of the box (it silently does
+    // nothing rather than showing a dialog). Usage:
+    //   showConfirm('Delete this habit?', () => { ...actually delete... });
+    let _confirmCallback = null;
+    function showConfirm(message, onConfirm, confirmLabel) {
+      document.getElementById('confirm-modal-message').textContent = message;
+      document.getElementById('confirm-modal-ok-btn').textContent = confirmLabel || 'Delete';
+      _confirmCallback = onConfirm;
+      openModal('confirm-modal');
+    }
+    function confirmModalResolve(confirmed) {
+      closeModal('confirm-modal');
+      if (confirmed && _confirmCallback) _confirmCallback();
+      _confirmCallback = null;
+    }
     document.querySelectorAll('.modal-overlay').forEach(m => {
       m.addEventListener('click', e => {if (e.target === m) m.classList.remove('open');});
     });
@@ -4596,9 +4648,11 @@
     }
 
     function deleteTask(id) {
-      save(KEYS.tasks, load(KEYS.tasks, []).filter(t => t.id !== id));
-      renderPlanner();
-      if (document.getElementById('todo-list')) renderTodo();
+      showConfirm('Delete this task?', () => {
+        save(KEYS.tasks, load(KEYS.tasks, []).filter(t => t.id !== id));
+        renderPlanner();
+        if (document.getElementById('todo-list')) renderTodo();
+      });
     }
 
     function toggleTask(id, done, dateKey) {
@@ -4896,12 +4950,13 @@
     }
 
     function deleteChapterNote(noteId) {
-      if (!confirm('Delete this note?')) return;
       if (!activeTopicId) return;
-      const cd = getChapterData(activeTopicId);
-      cd.notes = (cd.notes || []).filter(n => n.id !== noteId);
-      saveChapterData(activeTopicId, cd);
-      renderChapterNotes();
+      showConfirm('Delete this note?', () => {
+        const cd = getChapterData(activeTopicId);
+        cd.notes = (cd.notes || []).filter(n => n.id !== noteId);
+        saveChapterData(activeTopicId, cd);
+        renderChapterNotes();
+      });
     }
 
     function toggleStudyType(type) {
@@ -4948,11 +5003,12 @@
     }
 
     function deleteTopicPill(paperId, topicId) {
-      if (!confirm('Delete this chapter?')) return;
-      const topics = getTopics();
-      topics[paperId] = (topics[paperId] || []).filter(t => t.id !== topicId);
-      save(KEYS.topics, topics);
-      renderTopicPills(paperId);
+      showConfirm('Delete this chapter?', () => {
+        const topics = getTopics();
+        topics[paperId] = (topics[paperId] || []).filter(t => t.id !== topicId);
+        save(KEYS.topics, topics);
+        renderTopicPills(paperId);
+      });
     }
 
     function addTopicFromDetail() {
@@ -5060,11 +5116,12 @@
     }
 
     function deleteLog(d) {
-      if (!confirm('Delete this log entry?')) return;
-      const logs = load(KEYS.studyLog, {});
-      delete logs[d];
-      save(KEYS.studyLog, logs);
-      renderStudyLog();
+      showConfirm('Delete this log entry?', () => {
+        const logs = load(KEYS.studyLog, {});
+        delete logs[d];
+        save(KEYS.studyLog, logs);
+        renderStudyLog();
+      });
     }
 
     function calcStreak() {
@@ -5085,7 +5142,7 @@
     function saveResearchNote() {
       const ticker = document.getElementById('r-ticker').value.trim().toUpperCase();
       const company = document.getElementById('r-company').value.trim();
-      if (!ticker || !company) {alert('Please enter ticker and company name.'); return;}
+      if (!ticker || !company) {showToast('Please enter ticker and company name'); return;}
       const research = load(KEYS.research, []);
       research.unshift({
         id: uid(), ticker, company,
@@ -5228,7 +5285,7 @@
       const MAX = 4 * 1024 * 1024; // 4 MB per file warning
       Array.from(fileList).forEach(file => {
         if (file.size > MAX) {
-          alert(file.name + ' is larger than 4 MB. It may not save due to storage limits. Proceed anyway?');
+          showToast(file.name + ' is over 4MB — may not save due to storage limits');
         }
         const reader = new FileReader();
         reader.onload = e => {
@@ -5241,7 +5298,7 @@
             save(KEYS.research, research);
             renderResearchFiles(research[idx]);
           } catch (ex) {
-            alert('Storage limit reached. Try a smaller file.');
+            showToast('Storage limit reached — try a smaller file');
           }
         };
         reader.readAsDataURL(file);
@@ -5285,21 +5342,23 @@
     }
 
     function deleteResearchFile(fileId) {
-      if (!confirm('Remove this file?')) return;
-      const research = load(KEYS.research, []);
-      const idx = research.findIndex(r => r.id === activeResearchId);
-      if (idx < 0) return;
-      research[idx].files = (research[idx].files || []).filter(f => f.id !== fileId);
-      save(KEYS.research, research);
-      renderResearchFiles(research[idx]);
+      showConfirm('Remove this file?', () => {
+        const research = load(KEYS.research, []);
+        const idx = research.findIndex(r => r.id === activeResearchId);
+        if (idx < 0) return;
+        research[idx].files = (research[idx].files || []).filter(f => f.id !== fileId);
+        save(KEYS.research, research);
+        renderResearchFiles(research[idx]);
+      });
     }
 
     function deleteResearch(id) {
-      if (!confirm('Delete this research note and all its files?')) return;
-      const research = load(KEYS.research, []).filter(r => r.id !== id);
-      save(KEYS.research, research);
-      closeResearchDetail();
-      renderResearch();
+      showConfirm('Delete this research note and all its files?', () => {
+        const research = load(KEYS.research, []).filter(r => r.id !== id);
+        save(KEYS.research, research);
+        closeResearchDetail();
+        renderResearch();
+      });
     }
 
     // ============================================================
@@ -5321,7 +5380,7 @@
 
     function saveBook() {
       const title = document.getElementById('b-title').value.trim();
-      if (!title) {alert('Please enter a book title.'); return;}
+      if (!title) {showToast('Please enter a book title'); return;}
       const books = load(KEYS.books, []);
       const status = document.getElementById('b-status').value;
       books.unshift({
@@ -5459,7 +5518,7 @@
           if (!books[idx].files) books[idx].files = [];
           books[idx].files.push({id: uid(), name: file.name, type: file.type, size: file.size, data: e.target.result, uploadedAt: today()});
           try {save(KEYS.books, books); renderBookFiles(books[idx]);}
-          catch (ex) {alert('Storage limit reached. Try a smaller file.');}
+          catch (ex) {showToast('Storage limit reached — try a smaller file');}
         };
         reader.readAsDataURL(file);
       });
@@ -5492,20 +5551,22 @@
     }
 
     function deleteBookFile(fileId) {
-      if (!confirm('Remove this file?')) return;
-      const books = load(KEYS.books, []);
-      const idx = books.findIndex(b => b.id === activeBookId);
-      if (idx < 0) return;
-      books[idx].files = (books[idx].files || []).filter(f => f.id !== fileId);
-      save(KEYS.books, books);
-      renderBookFiles(books[idx]);
+      showConfirm('Remove this file?', () => {
+        const books = load(KEYS.books, []);
+        const idx = books.findIndex(b => b.id === activeBookId);
+        if (idx < 0) return;
+        books[idx].files = (books[idx].files || []).filter(f => f.id !== fileId);
+        save(KEYS.books, books);
+        renderBookFiles(books[idx]);
+      });
     }
 
     function deleteBook(id) {
-      if (!confirm('Remove this book?')) return;
-      save(KEYS.books, load(KEYS.books, []).filter(b => b.id !== id));
-      closeBookDetail();
-      renderBooks();
+      showConfirm('Remove this book?', () => {
+        save(KEYS.books, load(KEYS.books, []).filter(b => b.id !== id));
+        closeBookDetail();
+        renderBooks();
+      });
     }
 
     // ============================================================
@@ -5547,6 +5608,14 @@
       document.getElementById('sidebar-streak').style.display = s.showStreak ? 'block' : 'none';
       renderDashboard();
       showToast('Settings saved ✓');
+    }
+
+    // Used by the "Save Settings" button specifically — the checkbox
+    // toggles above call saveSettings() directly so they save live without
+    // closing the whole modal on every flip.
+    function saveSettingsAndClose() {
+      saveSettings();
+      closeModal('settings-modal');
     }
 
     async function changePassword() {
@@ -5630,43 +5699,47 @@
     function restoreBackupFile(input) {
       const file = input.files[0];
       if (!file) return;
-      if (!confirm('This will replace ALL your current data with the backup file. Continue?')) {input.value = ''; return;}
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          const entries = parsed.data || parsed;
-          if (typeof entries !== 'object' || Array.isArray(entries)) throw new Error('Unrecognised format');
-          let count = 0;
-          Object.entries(entries).forEach(([key, val]) => {
-            try {localStorage.setItem(key, val); count++;} catch (ex) { }
-          });
-          alert('Restored ' + count + ' items successfully! The page will now reload.');
-          location.reload();
-        } catch (err) {
-          const st = document.getElementById('backup-status');
-          if (st) {st.style.color = 'var(--red)'; st.textContent = 'Could not read this file. Make sure you pick a MyHub backup file.';}
-          input.value = '';
-        }
-      };
-      reader.readAsText(file);
+      showConfirm('This will replace ALL your current data with the backup file. Continue?', () => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            const entries = parsed.data || parsed;
+            if (typeof entries !== 'object' || Array.isArray(entries)) throw new Error('Unrecognised format');
+            let count = 0;
+            Object.entries(entries).forEach(([key, val]) => {
+              try {localStorage.setItem(key, val); count++;} catch (ex) { }
+            });
+            showToast('Restored ' + count + ' items — reloading...');
+            setTimeout(() => location.reload(), 1200);
+          } catch (err) {
+            const st = document.getElementById('backup-status');
+            if (st) {st.style.color = 'var(--red)'; st.textContent = 'Could not read this file. Make sure you pick a MyHub backup file.';}
+            input.value = '';
+          }
+        };
+        reader.readAsText(file);
+      }, 'Restore');
     }
 
     function clearTodayTasks() {
-      if (!confirm('Clear all tasks for today?')) return;
-      save(KEYS.tasks, load(KEYS.tasks, []).filter(t => t.date !== today()));
-      renderDashboard();
-      showToast('Today\'s tasks cleared');
+      showConfirm('Clear all tasks for today?', () => {
+        save(KEYS.tasks, load(KEYS.tasks, []).filter(t => t.date !== today()));
+        renderDashboard();
+        showToast('Today\'s tasks cleared');
+      });
     }
 
     function resetAllData() {
-      if (!confirm('Reset ALL data? This cannot be undone.')) return;
-      if (!confirm('Are you absolutely sure? All CA progress, books, research, logs will be deleted.')) return;
-      const settings = getSettings();
-      Object.values(KEYS).forEach(k => localStorage.removeItem(k));
-      localStorage.removeItem('hub_daynotes');
-      save('hub_settings', settings);
-      location.reload();
+      showConfirm('Reset ALL data? This cannot be undone.', () => {
+        showConfirm('Are you absolutely sure? All CA progress, books, research, logs will be deleted.', () => {
+          const settings = getSettings();
+          Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+          localStorage.removeItem('hub_daynotes');
+          save('hub_settings', settings);
+          location.reload();
+        }, 'Yes, delete everything');
+      });
     }
 
     function showToast(msg) {
@@ -5748,12 +5821,13 @@
     }
 
     function deleteHabit(id) {
-      if (!confirm('Delete this habit? Its check-in history will be lost too.')) return;
-      saveHabitsList(getHabits().filter(h => h.id !== id));
-      const checks = getHabitChecks();
-      delete checks[id];
-      saveHabitChecks(checks);
-      renderHabitTracker();
+      showConfirm('Delete this habit? Its check-in history will be lost too.', () => {
+        saveHabitsList(getHabits().filter(h => h.id !== id));
+        const checks = getHabitChecks();
+        delete checks[id];
+        saveHabitChecks(checks);
+        renderHabitTracker();
+      });
     }
 
     function toggleHabitCheck(habitId, dateKeyStr) {
@@ -5902,10 +5976,13 @@
       const input = document.getElementById('todo-add-input');
       const text = input.value.trim();
       if (!text) return;
+      const dateInput = document.getElementById('todo-add-date');
+      const chosenDate = dateInput.value || today();
       const tasks = load(KEYS.tasks, []);
-      tasks.push({id: uid(), text, done: false, date: today(), priority: todoPriority});
+      tasks.push({id: uid(), text, done: false, date: chosenDate, priority: todoPriority});
       save(KEYS.tasks, tasks);
       input.value = '';
+      dateInput.value = today();
       addActivity('Task added: ' + text);
       renderTodo();
       renderPlanner();
@@ -5916,14 +5993,20 @@
     function renderTodo() {
       const sub = document.getElementById('todo-sub');
       if (!sub) return;
-      const all = load(KEYS.tasks, []).filter(t => t.date === today());
+
+      const dateInput = document.getElementById('todo-add-date');
+      if (dateInput && !dateInput.value) dateInput.value = today();
+
+      const todayKey = today();
+      const all = load(KEYS.tasks, [])
+        .filter(t => t.date >= todayKey)
+        .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
       const pending = all.filter(t => !t.done);
       const done = all.filter(t => t.done);
-      const d = new Date();
-      const dateLbl = d.toLocaleDateString('en-IN', {month: 'short', day: 'numeric'});
+      const todayCount = all.filter(t => t.date === todayKey).length;
       sub.textContent = all.length === 0
-        ? dateLbl + ' · no tasks yet'
-        : dateLbl + ' · ' + pending.length + ' pending, ' + done.length + ' done';
+        ? 'No upcoming tasks yet'
+        : todayCount + ' today · ' + pending.length + ' pending, ' + done.length + ' done';
 
       let list = all;
       if (todoFilter === 'pending') list = pending;
@@ -5931,17 +6014,32 @@
 
       const container = document.getElementById('todo-list');
       if (list.length === 0) {
-        container.innerHTML = `<div class="todo-empty">No tasks for today.<br>Enjoy your free time — or add something important.</div>`;
+        container.innerHTML = `<div class="todo-empty">No tasks here.<br>Add one below — today or any future date.</div>`;
         return;
       }
-      container.innerHTML = list.slice().reverse().map(t => `
+      container.innerHTML = list.map(t => {
+        const dateLbl = todoDateLabel(t.date);
+        return `
       <div class="todo-item ${t.done ? 'done-task' : ''}">
         <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask('${t.id}',this.checked,'${t.date}')">
         <span class="todo-item-text">${t.text}</span>
+        <span class="todo-item-date">${dateLbl}</span>
         <span class="todo-item-tag ${t.priority === 'high' ? 'high' : 'normal'}">${t.priority === 'high' ? 'High' : 'Normal'}</span>
         <button class="todo-item-delete" onclick="deleteTask('${t.id}')" title="Remove">✕</button>
       </div>
-    `).join('');
+    `;
+      }).join('');
+    }
+
+    // Turns a stored date key into "Today", "Tomorrow", or a short date
+    function todoDateLabel(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const todayKey = today();
+      const tmrw = new Date();
+      tmrw.setDate(tmrw.getDate() + 1);
+      if (dateStr === todayKey) return 'Today';
+      if (dateStr === dateKey(tmrw)) return 'Tomorrow';
+      return d.toLocaleDateString('en-IN', {month: 'short', day: 'numeric'});
     }
 
     // ============================================================

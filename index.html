@@ -5649,23 +5649,46 @@
     // ============================================================
     // DATA BACKUP & RESTORE
     // ============================================================
-    function downloadBackupFile() {
+    async function downloadBackupFile() {
       const data = {};
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         data[key] = localStorage.getItem(key);
       }
       const payload = JSON.stringify({version: 1, savedAt: new Date().toISOString(), data}, null, 2);
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const filename = 'CA_Finalist_Backup_' + dateStr + '.json';
+      const st = document.getElementById('backup-status');
+
+      // Native app: a plain browser-style download silently fails inside
+      // Android's WebView (well-documented Capacitor limitation — no error,
+      // file just never appears anywhere). Instead, write it to a temp
+      // location and hand it to the native share sheet, so you can save it
+      // straight to Google Drive, a file manager, email, etc. — you choose.
+      if (window.Capacitor?.Plugins?.Filesystem && window.Capacitor?.Plugins?.Share) {
+        try {
+          const { Filesystem, Share } = window.Capacitor.Plugins;
+          await Filesystem.writeFile({path: filename, data: payload, directory: 'CACHE', encoding: 'utf8'});
+          const { uri } = await Filesystem.getUri({path: filename, directory: 'CACHE'});
+          await Share.share({title: 'CA Finalist Backup', url: uri});
+          save('hub_gdrive_last_backup', new Date().toISOString());
+          if (st) {st.style.color = 'var(--green)'; st.textContent = '✓ Choose where to save it — Google Drive, Files, email, etc.';}
+          updateLastBackupInfo();
+        } catch (err) {
+          if (st) {st.style.color = 'var(--red)'; st.textContent = 'Could not create the backup file. Try again.';}
+        }
+        return;
+      }
+
+      // Regular browser / PWA context: the standard web download works fine here.
       const blob = new Blob([payload], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const dateStr = new Date().toISOString().slice(0, 10);
       a.href = url;
-      a.download = 'MyHub_Backup_' + dateStr + '.json';
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
       save('hub_gdrive_last_backup', new Date().toISOString());
-      const st = document.getElementById('backup-status');
       if (st) {st.style.color = 'var(--green)'; st.textContent = '✓ Backup downloaded — save this file to Google Drive or your phone.';}
       updateLastBackupInfo();
     }

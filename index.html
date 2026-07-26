@@ -129,8 +129,6 @@
     .main {
       flex: 1;
       width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
       padding: 16px 14px 84px;
       min-height: 100vh;
     }
@@ -140,8 +138,6 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      max-width: 720px;
-      margin: 0 auto;
       padding: 14px 14px 10px;
       background: var(--bg);
     }
@@ -3458,11 +3454,15 @@
           <button class="todo-priority-btn" id="todo-priority-high" onclick="setTodoPriority('high')">High
             Priority</button>
         </div>
-        <div class="add-topic-inline" style="margin-top:10px">
-          <input type="text" id="todo-add-input" placeholder="Add a task..."
-            onkeydown="if(event.key==='Enter')addTodo()">
-          <input type="date" id="todo-add-date" class="form-input" style="flex:0 0 130px;width:auto">
-          <button class="btn btn-gold" onclick="addTodo()">Add</button>
+        <div style="margin-top:10px">
+          <div class="add-topic-inline" style="margin-top:0">
+            <input type="text" id="todo-add-input" placeholder="Add a task..." style="width:100%;max-width:none"
+              onkeydown="if(event.key==='Enter')addTodo()">
+          </div>
+          <div class="add-topic-inline" style="margin-top:8px;padding-top:0;border-top:none">
+            <input type="date" id="todo-add-date" class="form-input" style="flex:1;width:auto;max-width:none">
+            <button class="btn btn-gold" onclick="addTodo()">Add</button>
+          </div>
         </div>
       </div>
     </div>
@@ -3943,25 +3943,6 @@
         </div>
 
         <div id="backup-status" style="font-size:11px;color:var(--text3);margin-top:12px"></div>
-      </div>
-
-      <!-- Danger Zone -->
-      <div class="settings-section">
-        <div class="settings-section-title" style="color:var(--red)">Danger Zone</div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-row-label">Clear today's tasks</div>
-            <div class="settings-row-desc">Removes all tasks for today only</div>
-          </div>
-          <button class="btn btn-danger" onclick="clearTodayTasks()">Clear</button>
-        </div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-row-label">Reset all data</div>
-            <div class="settings-row-desc">Wipes everything — cannot be undone</div>
-          </div>
-          <button class="btn btn-danger" onclick="resetAllData()">Reset</button>
-        </div>
       </div>
 
       <div class="modal-actions" style="margin-top:20px">
@@ -5743,26 +5724,6 @@
         };
         reader.readAsText(file);
       }, 'Restore');
-    }
-
-    function clearTodayTasks() {
-      showConfirm('Clear all tasks for today?', () => {
-        save(KEYS.tasks, load(KEYS.tasks, []).filter(t => t.date !== today()));
-        renderDashboard();
-        showToast('Today\'s tasks cleared');
-      });
-    }
-
-    function resetAllData() {
-      showConfirm('Reset ALL data? This cannot be undone.', () => {
-        showConfirm('Are you absolutely sure? All CA progress, books, research, logs will be deleted.', () => {
-          const settings = getSettings();
-          Object.values(KEYS).forEach(k => localStorage.removeItem(k));
-          localStorage.removeItem('hub_daynotes');
-          save('hub_settings', settings);
-          location.reload();
-        }, 'Yes, delete everything');
-      });
     }
 
     function showToast(msg) {
